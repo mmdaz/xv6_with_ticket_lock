@@ -6,6 +6,13 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "ticketlock.h"
+
+struct
+{
+  int Content;
+  struct ticketlock lock;
+} cs;
 
 struct {
   struct spinlock lock;
@@ -531,4 +538,17 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+int ticketlockTest(){
+  acquire_t(&cs.lock);
+  cs.Content++;
+  release_t(&cs.lock); 
+  return 0;
+}
+
+int ticketlockInit(){
+  initlock_t(&cs.lock, "cs");
+  cs.Content = 0;
+  return 0;
 }

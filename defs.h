@@ -9,6 +9,8 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct ticketlock;
+
 
 // bio.c
 void            binit(void);
@@ -140,8 +142,12 @@ int             holdingsleep(struct sleeplock*);
 void            initsleeplock(struct sleeplock*, char*);
 
 // ticketlock.c
+int             ticketlockTest(void);
+int             ticketlockInit(void);
+void            initlock_t(struct ticketlock*, char*);
+void            acquire_t(struct ticketlock*);
+void            release_t(struct ticketlock*);
 
-void            void    initlock_t(struct ticketlock *lk, char *name)
 
 // string.c
 int             memcmp(const void*, const void*, uint);
