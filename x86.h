@@ -181,3 +181,13 @@ struct trapframe {
   ushort ss;
   ushort padding6;
 };
+
+static inline uint
+fetch_and_add(volatile uint *addr, uint val)
+{
+  asm volatile("lock; xaddl %%eax, %2;" :
+               "=a" (val) :
+               "a" (val) , "m" (*addr) :
+               "memory");
+  return val;
+}
