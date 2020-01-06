@@ -8,11 +8,13 @@
 #include "spinlock.h"
 #include "ticketlock.h"
 
-// struct
-// {
-//   int Content;
-//   struct ticketlock lock;
-// } cs;
+
+// Check whether this cpu is holding the lock.
+int
+holding_t(struct ticketlock *lock)
+{
+  return (lock->ticket != lock->turn) && (lock->proc == myproc());
+}
 
 void
 initlock_t(struct ticketlock *lk, char *name)
@@ -33,7 +35,7 @@ acquire_t(struct ticketlock *lk)
     panic("acquire");
 
   ticket = fetch_and_add(&lk->ticket, 1);
-  while(lk->turn != ticket)
+  while(lk->turn != ticket);
     givepriority(lk->proc);
 
   // Record info about lock acquisition for debugging.
@@ -55,16 +57,8 @@ release_t(struct ticketlock *lk)
 
   lk->turn++; //fetch_and_add(&lk->turn, 1);
   wakeup(lk);
-  resetpriority();
 
   //popcli();
-}
-
-// Check whether this cpu is holding the lock.
-int
-holding_t(struct ticketlock *lock)
-{
-  return (lock->ticket != lock->turn) && (lock->proc == myproc());
 }
 
 // int ticketlockTest(){
