@@ -13,6 +13,7 @@
 int
 holding_t(struct ticketlock *lock)
 {
+  // popcli();
   return (lock->ticket != lock->turn) && (lock->proc == myproc());
 }
 
@@ -30,14 +31,15 @@ void
 acquire_t(struct ticketlock *lk)
 {
   uint ticket;
-  //pushcli(); // disable interrupts to avoid deadlock.
+  pushcli(); // disable interrupts to avoid deadlock.
   if(holding_t(lk))
     panic("acquire");
 
   ticket = fetch_and_add(&lk->ticket, 1);
-  while(lk->turn != ticket);
+  // cprintf("ticket: %d", ticket);
+  
+  while(lk->turn != ticket)
     givepriority(lk->proc);
-
   // Record info about lock acquisition for debugging.
   lk->cpu = mycpu();
   lk->proc = myproc();
@@ -57,8 +59,9 @@ release_t(struct ticketlock *lk)
 
   lk->turn++; //fetch_and_add(&lk->turn, 1);
   wakeup(lk);
+  resetpriority();
 
-  //popcli();
+  popcli();
 }
 
 // int ticketlockTest(){

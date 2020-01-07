@@ -124,6 +124,8 @@ void            wakeup(void*);
 void            yield(void);
 int             ticketlockTest(void);
 int             ticketlockInit(void);
+void            givepriority(struct proc*);
+void            resetpriority();
 
 // swtch.S
 void            swtch(struct context**, struct context*);

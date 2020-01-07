@@ -330,33 +330,64 @@ void
 scheduler(void)
 {
   struct proc *p;
-  struct cpu *c = mycpu();
-  c->proc = 0;
-  
+  //struct proc *np, *lp;
+  int priority;
+  //int sharedstack;
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+    priority = 0;
+    
+    // Find highest priority level in runnable processes
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
       if(p->state != RUNNABLE)
         continue;
-
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+      if (priority < p->priority)
+        priority = p->priority;
     }
+
+    //sharedstack = 0;
+
+    // Round robin all processes of highest priority
+    //for ( ; priority >= 0; priority--) {
+
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+          if(p->state != RUNNABLE)
+            continue;
+          if(p->priority < priority)
+            continue;
+          if(p->priority > priority)
+            break;
+          //if (proc->isthread || p->isthread) {
+          //  if ((proc->parent == p->parent) ||  (proc->parent == p) 
+          //      || (proc == p->parent))
+          //    sharedstack = 1;
+          //}
+
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          // proc = p;
+          // //if (!sharedstack)
+            switchuvm(p);
+          // p->state = RUNNING;
+          // temptime = ticks;
+          // if(p->runtime == 0)
+          //   p->responsetime = temptime - p->starttime;
+          swtch(&mycpu()->scheduler, p->context);
+          switchkvm();
+
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          // p = 0;
+          //sharedstack = 0;
+        }
+    //}
     release(&ptable.lock);
 
   }
@@ -538,6 +569,31 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+void
+resetpriority()
+{
+    acquire(&ptable.lock);
+    if (myproc()->priority != myproc()->basepriority) {
+      cprintf("[%d] priority restored to %d from inherited %d\n", 
+              myproc()->pid, myproc()->basepriority, myproc()->priority);
+      myproc()->priority = myproc()->basepriority;
+    }
+    release(&ptable.lock);
+}
+
+
+void
+givepriority(struct proc *p)
+{
+  acquire(&ptable.lock);
+  if(p->priority < myproc()->priority) {
+    cprintf("[%d] inherited priority %d from %d\n", p->pid, myproc()->priority, 
+            myproc()->pid);
+    p->priority = myproc()->priority;
+  }
+  release(&ptable.lock);
 }
 
 int ticketlockTest(){
