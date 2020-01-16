@@ -10,6 +10,7 @@ struct sleeplock;
 struct stat;
 struct superblock;
 struct ticketlock;
+struct cs;
 
 
 // bio.c
@@ -149,6 +150,7 @@ void            initsleeplock(struct sleeplock*, char*);
 void            initlock_t(struct ticketlock*, char*);
 void            acquire_t(struct ticketlock*);
 void            release_t(struct ticketlock*);
+extern int content;
 
 
 // string.c

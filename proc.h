@@ -51,6 +51,7 @@ struct proc {
   char name[16];               // Process name (debugging)
   int priority;                // Process priority 0-63
   int basepriority;            // used for priority donating
+  int ticket;
 
 };
 
