@@ -9,7 +9,7 @@ int main()
 {
     char argv[100];
     printf(1,"enter pattern for readers/writers test\n");
-    read_size = read(0, argv, sizeof(argv));
+    int read_size = read(0, argv, sizeof(argv));
     argv[read_size-1] = '\0';
     int pattern[100], i;
     for (i = 0; argv[i+1] != '\0'; i++) {
@@ -41,10 +41,10 @@ void testReadersWriters(int* pattern, int pattern_size){
         else
             break;
     }
-    if(pid<0)[
+    if(pid<0){
         printf(1,"fork failed!\n");
         exit();
-    ]
+    }
     else if(pid == 0){
         printf(1,"child adding to shared counter\n");
         int res = rwtest(pattern[i-1]);
@@ -57,7 +57,7 @@ void testReadersWriters(int* pattern, int pattern_size){
         for(i = 0; i<pattern_size; i++)
             wait();
         printf(1,"user program finished\n");
-        int res = rwtest(0);
+        int res = rwtest(1);
         printf(1,"last value of shared counter : %d\n", res);
     }
 }

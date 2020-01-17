@@ -579,3 +579,11 @@ int ticketlockInit(){
   cs.Content = 0;
   return 0;
 }
+
+int rwinit(){
+  return 1;
+}
+
+int rwtest(uint pattern){
+  return 1;
+}

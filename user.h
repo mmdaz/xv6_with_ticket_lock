@@ -25,6 +25,8 @@ int sleep(int);
 int uptime(void);
 int ticketlockTest(void);
 int ticketlockInit(void);
+int rwtest(uint);
+int rwinit(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -1,3 +1,4 @@
+#include "types.h"
 struct buf;
 struct context;
 struct file;
@@ -127,6 +128,8 @@ int             ticketlockTest(void);
 int             ticketlockInit(void);
 void            givepriority(struct proc*);
 void            resetpriority();
+int             rwinit(void);
+int             rwtest(uint);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
@@ -152,6 +155,10 @@ void            acquire_t(struct ticketlock*);
 void            release_t(struct ticketlock*);
 extern int content;
 
+//rwlock.c
+void        initrwlock();
+void        reader(void *arg);
+void        writer(void *arg);
 
 // string.c
 int             memcmp(const void*, const void*, uint);
@@ -202,3 +209,11 @@ void            clearpteu(pde_t *pgdir, char *uva);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+
+
+//semaphore.c
+int      sem_init(int, int);
+int      sem_destroy(int);
+int      sem_wait(int);
+int      sem_signal(int);
