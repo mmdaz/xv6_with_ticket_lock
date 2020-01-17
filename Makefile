@@ -28,8 +28,8 @@ OBJS = \
 	vectors.o\
 	vm.o\
 	ticketlock.o\
-	# rwlock.o\
-	# semaphore.o
+	rwlock.o\
+	semaphore.o
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
@@ -185,9 +185,9 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_ticketlockTestTest\
-	# _rwtest
+	_rwtest\
 
-fs.img: mkfs README $(UPROGS)
+fs.img: mkfs REdio -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0ADME $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
 
 -include *.d
@@ -254,7 +254,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
-	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\ ticketlockTestTest\
+	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\ ticketlockTestTest\ rwtest\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
