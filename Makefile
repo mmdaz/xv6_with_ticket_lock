@@ -29,7 +29,7 @@ OBJS = \
 	vm.o\
 	ticketlock.o\
 	rwlock.o\
-	semaphore.o
+	# rwlock.o
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
@@ -187,7 +187,7 @@ UPROGS=\
 	_ticketlockTestTest\
 	_rwtest\
 
-fs.img: mkfs REdio -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0ADME $(UPROGS)
+fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
 
 -include *.d

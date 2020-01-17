@@ -1,4 +1,4 @@
-#include "semaphore.h"
+// #include "semaphore.h"
 // #include "user.h"
 #include "defs.h"
 #define mutex 1
