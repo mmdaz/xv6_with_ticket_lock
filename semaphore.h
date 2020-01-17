@@ -1,6 +1,6 @@
 // #include "defs.h"
 // struct semaphore {
-//   struct spinlock lock;
+//   struct spinlock lck;
 //   int value;
 //   int active;
 // };
