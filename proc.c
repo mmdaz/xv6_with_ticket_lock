@@ -6,6 +6,13 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "ticketlock.h"
+
+struct
+{
+  struct ticketlock lock;
+  int Content;
+} cs;
 
 struct {
   struct spinlock lock;
@@ -88,6 +95,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p -> ticket = content; 
 
   release(&ptable.lock);
 
@@ -322,7 +330,7 @@ wait(void)
 void
 scheduler(void)
 {
-  struct proc *p;
+struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
   
@@ -531,4 +539,43 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+void
+resetpriority()
+{
+    acquire(&ptable.lock);
+    if (myproc()->priority != myproc()->basepriority) {
+      cprintf("[%d] priority restored to %d from inherited %d\n", 
+              myproc()->pid, myproc()->basepriority, myproc()->priority);
+      myproc()->priority = myproc()->basepriority;
+    }
+    release(&ptable.lock);
+}
+
+
+void
+givepriority(struct proc *p)
+{
+  acquire(&ptable.lock);
+  if(p->priority < myproc()->priority) {
+    cprintf("[%d] inherited priority %d from %d\n", p->pid, myproc()->priority, 
+            myproc()->pid);
+    p->priority = myproc()->priority;
+  }
+  release(&ptable.lock);
+}
+
+int ticketlockTest(){
+  // cs -> proc = myproc();
+  acquire_t(&cs.lock);
+  cs.Content++;
+  release_t(&cs.lock);
+  return cs.Content;
+}
+
+int ticketlockInit(){
+  initlock_t(&cs.lock, "cs");
+  cs.Content = 0;
+  return 0;
 }
