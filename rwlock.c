@@ -1,43 +1,44 @@
-// #include "semaphore.h"
-// #include "user.h"
+#include "ticketlock.h"
 #include "defs.h"
-#define mutex 1
-#define writeblock 2
-int data, rcount;
+int data1; 
+int rcount;
+struct ticketlock writelock, lock;
 
 
 void initrwlock()
 {
-data = 0,rcount = 0;
-sem_init(mutex, 1);
-sem_init(writeblock, 1);
+  data1 = 0;
+  rcount = 0;
+  initlock_t(&writelock,"wl");
+  initlock_t(&lock,"l");
 }
 
-void reader(void *arg)
+int reader()
 {
-  int f;
-  f = ((int)arg);
-  sem_wait(mutex);
+  // int f;
+  // f = ((int)arg);
+  acquire_t(&lock);
   rcount = rcount + 1;
   if(rcount==1)
-   sem_wait(writeblock);
-  sem_signal(mutex);
-  cprintf("Data read by the reader%d is %d\n",f,data);
+    acquire_t(&writelock);
+  release_t(&lock);
+  cprintf("data1 read by the reader is %d\n",data1);
 //   sleep(1);
-  sem_wait(mutex);
+  acquire_t(&lock);
   rcount = rcount - 1;
   if(rcount==0)
-   sem_signal(writeblock);
-  sem_signal(mutex);
+    release_t(&writelock);
+  release_t(&lock);
+  return data1;
 }
 
-void writer(void *arg)
+void writer()
 {
-  int f;
-  f = ((int) arg);
-  sem_wait(writeblock);
-  data++;
-  cprintf("Data writen by the writer%d is %d\n",f,data);
+  // int f;
+  // f = ((int) arg);
+  acquire_t(&writelock);
+  data1++;
+  cprintf("data1 writen by the writer is %d\n",data1);
 //   sleep(1,);
-  sem_signal(writeblock);
+  release_t(&writelock);
 }

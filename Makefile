@@ -29,7 +29,6 @@ OBJS = \
 	vm.o\
 	ticketlock.o\
 	rwlock.o\
-	# rwlock.o
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf

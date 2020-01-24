@@ -73,27 +73,3 @@ release_t(struct ticketlock *lk)
   popcli();
 }
 
-// int ticketlockTest(){
-//   acquire_t(&cs.lock);
-//   cs.Content++;
-//   release_t(&cs.lock); 
-//   return 0;
-// }
-
-// int ticketlockInit(){
-//   initlock_t(&cs.lock, "cs");
-//   cs.Content = 0;
-//   return 0;
-// }
-
-// int
-// sys_ticketlockInit(void)
-// {
-//   return ticketlockInit();
-// }
-
-// int
-// sys_ticketlockTest(void)
-// {
-//   return sys_ticketlockTest();
-// }
