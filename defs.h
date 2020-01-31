@@ -1,3 +1,4 @@
+#include "types.h"
 struct buf;
 struct context;
 struct file;
@@ -127,6 +128,8 @@ int             ticketlockTest(void);
 int             ticketlockInit(void);
 void            givepriority(struct proc*);
 void            resetpriority();
+int             rwinit(void);
+int             rwtest(uint);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
@@ -152,6 +155,10 @@ void            acquire_t(struct ticketlock*);
 void            release_t(struct ticketlock*);
 extern int content;
 
+//rwlock.c
+void        initrwlock();
+int        reader();
+void        writer();
 
 // string.c
 int             memcmp(const void*, const void*, uint);

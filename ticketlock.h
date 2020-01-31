@@ -1,4 +1,4 @@
-
+#include "types.h"
 // Mutual exclusion lock.
 struct ticketlock {
   uint ticket;       // Is the lock held?
